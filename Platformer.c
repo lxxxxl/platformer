@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include "Tilengine.h"
+#include "Player.h"
 
 #define WIDTH	640
 #define HEIGHT	400
+
+#define SPRITE_SIZE 16
 
 
 /* layers */
@@ -26,7 +29,7 @@ int main (int argc, char *argv[])
 	TLN_Palette palette;
 
 	/* setup engine */
-	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, 0, 1);
+	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, 1, 1);
 	TLN_SetLogLevel(TLN_LOG_VERBOSE);
 	//TLN_SetRasterCallback (raster_callback);
 	TLN_SetBGColor (0,128,238);
@@ -36,12 +39,18 @@ int main (int argc, char *argv[])
 	foreground = TLN_LoadTilemap ("map.tmx", NULL);
 	TLN_SetLayerTilemap (LAYER_FOREGROUND, foreground);
 
+	/* init player */
+	PlayerInit();
+
 	/* startup display */
 	TLN_CreateWindow (NULL, 0);
 
 	/* main loop */
 	while (TLN_ProcessWindow ())
 	{
+
+		/* process player tasks */
+		PlayerTasks();
 
 		/* render to window */
 		TLN_DrawFrame (0);
