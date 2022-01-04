@@ -18,7 +18,7 @@ bool isPassable(int x, int y)
 {
     TLN_TileInfo ti;
 	TLN_GetLayerTile (0, x, y, &ti);
-	if (ti.index && IsSolid(ti.index))
+	if (!ti.empty && IsSolid(ti.index))
         return false;
     return true;
 }
