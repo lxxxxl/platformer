@@ -106,7 +106,7 @@ void CreatureTasks (Actor *actor)
 	bool jump = false;
 	Creature *creature = (Creature*)actor->usrdata;
 
-	/* input */
+	/* player input */
 	if (actor->type==TYPE_PLAYER){
 		if (TLN_GetInput (INPUT_LEFT))
 			input = DIR_LEFT;
@@ -114,6 +114,21 @@ void CreatureTasks (Actor *actor)
 			input = DIR_RIGHT;
 		if (TLN_GetInput (INPUT_A))
 			jump = true;
+	}
+	/* .. or ai processing */
+	else{
+		if (creature->direction==DIR_LEFT){
+			if (!isPassable(actor->x+SPRITE_SIZE/2, actor->y+SPRITE_SIZE))
+				input = DIR_LEFT;
+			else
+				input = DIR_RIGHT;
+		}
+		else{
+			if (!isPassable(actor->x+SPRITE_SIZE/2, actor->y+SPRITE_SIZE))
+				input = DIR_RIGHT;
+			else
+				input = DIR_LEFT;
+		}
 	}
 
 	/* direction flags */
@@ -140,10 +155,14 @@ void CreatureTasks (Actor *actor)
 		if (input == DIR_RIGHT){
 			if ((actor->x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(actor->x+SPRITE_SIZE, actor->y))
 				actor->x++;
+			else if (actor->type!=TYPE_PLAYER)
+				creature->direction=DIR_LEFT;	// change ai direction if there is obstacle ahead
 		}
 		else if (input == DIR_LEFT){
 			if ((actor->x > 0)  && isPassable(actor->x-1, actor->y))
 				actor->x--;
+			else if (actor->type!=TYPE_PLAYER)
+				creature->direction=DIR_RIGHT;	// change ai direction if there is obstacle ahead
 		}
 
 		if (creature->state==CREATURE_WALKING && !input)
