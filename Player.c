@@ -1,6 +1,7 @@
 #include "Tilengine.h"
 #include "Player.h"
 #include "Utils.h"
+#include "Actor.h"
 
 
 #define SPRITE_SIZE 16
@@ -28,13 +29,16 @@ TLN_Sequence walk;
 TLN_Sequence jump;
 TLN_SequencePack sp;
 
-int x,y;
 int sy = 0;
 PlayerState state;
 Direction direction;
 
+void PlayerTasks (Actor *actor);
+
 void PlayerInit (void)
 {
+	Actor* actor;
+	actor = SetActor(ACTOR_PLAYER, TYPE_PLAYER, 0,0, SPRITE_SIZE, SPRITE_SIZE, PlayerTasks);
 	player = TLN_LoadSpriteset ("Player");
 	//sp = TLN_LoadSequencePack ("Player.sqx");
 
@@ -44,7 +48,6 @@ void PlayerInit (void)
 	jump = TLN_CreateSpriteSequence (NULL, player, "jump", 2);
 	
 	TLN_SetSpriteSet (0, player);
-	TLN_SetSpritePosition (0, x,y);
 	
 	PlayerSetState (PLAYER_IDLE);
 	direction = DIR_RIGHT;
@@ -84,7 +87,7 @@ void PlayerSetState (int s)
 }
 
 
-void PlayerTasks (void)
+void PlayerTasks (Actor *actor)
 {
 	int y2, s0;
 	Direction input = 0;
@@ -120,12 +123,12 @@ void PlayerTasks (void)
 	case PLAYER_WALKING:
 	case PLAYER_JUMPING:
 		if (input == DIR_RIGHT){
-			if ((x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(x+SPRITE_SIZE, y))
-				x++;
+			if ((actor->x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(actor->x+SPRITE_SIZE, actor->y))
+				actor->x++;
 		}
 		else if (input == DIR_LEFT){
-			if ((x > 0)  && isPassable(x-1, y))
-				x--;
+			if ((actor->x > 0)  && isPassable(actor->x-1, actor->y))
+				actor->x--;
 		}
 
 		if (state==PLAYER_WALKING && !input)
@@ -135,7 +138,7 @@ void PlayerTasks (void)
 
 	
 	if (jump && state!=PLAYER_JUMPING &&
-		(y - JUMP_HEIGHT - SPRITE_SIZE*2) > 0){	// prevent jump out of screen
+		(actor->y - JUMP_HEIGHT - SPRITE_SIZE*2) > 0){	// prevent jump out of screen
 		PlayerSetState (PLAYER_JUMPING);
 		}
 
@@ -143,17 +146,15 @@ void PlayerTasks (void)
 	s0 = sy;
 	if (sy < 10)
 		sy++;
-	y2 = y + (sy>>2);
+	y2 = actor->y + (sy>>2);
 
 	if ((sy > 0) && 	// perform this check only when falling
 	(y2 % SPRITE_SIZE) <= 1 &&	// ... and only at the top of sprite
-	!isPassable(x+SPRITE_SIZE/2, y2+SPRITE_SIZE)){
+	!isPassable(actor->x+SPRITE_SIZE/2, y2+SPRITE_SIZE)){
 			sy = 0;
 	}
 
 	if (s0>0 && sy==0)
 		PlayerSetState (PLAYER_IDLE);
-	y = y2;
-
-	TLN_SetSpritePosition (0, x,y);
+	actor->y = y2;
 }

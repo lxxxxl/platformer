@@ -3,7 +3,6 @@
 
 void PlayerInit (void);
 void PlayerDeinit (void);
-void PlayerTasks (void);
 void PlayerSetState (int s);
 
 #endif

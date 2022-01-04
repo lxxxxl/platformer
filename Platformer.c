@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "Tilengine.h"
+#include "Actor.h"
 #include "Player.h"
 
 #define WIDTH	640
@@ -16,6 +17,8 @@ enum
 	MAX_LAYER
 };
 
+unsigned int frame;
+
 static void raster_callback (int line);
 
 /* entry point */
@@ -29,7 +32,7 @@ int main (int argc, char *argv[])
 	TLN_Palette palette;
 
 	/* setup engine */
-	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, 1, 1);
+	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
 	TLN_SetLogLevel(TLN_LOG_VERBOSE);
 	//TLN_SetRasterCallback (raster_callback);
 	TLN_SetBGColor (0,128,238);
@@ -39,6 +42,8 @@ int main (int argc, char *argv[])
 	foreground = TLN_LoadTilemap ("map.tmx", NULL);
 	TLN_SetLayerTilemap (LAYER_FOREGROUND, foreground);
 
+	/* init actors */
+	CreateActors(ACTOR_ENEMY_MAX);
 	/* init player */
 	PlayerInit();
 
@@ -49,11 +54,13 @@ int main (int argc, char *argv[])
 	while (TLN_ProcessWindow ())
 	{
 
-		/* process player tasks */
-		PlayerTasks();
+		/* process actors tasks */
+		TasksActors(frame);
 
 		/* render to window */
 		TLN_DrawFrame (0);
+
+		frame++;
 	}
 
 	/* deinit */
