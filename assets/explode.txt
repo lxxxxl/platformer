@@ -1,0 +1,4 @@
+explode1 = 0 0 16 16
+explode2 = 16 0 16 16
+explode3 = 32 0 16 16
+explode4 = 48 0 16 16
