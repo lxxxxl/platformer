@@ -18,15 +18,31 @@ enum
 
 unsigned int frame;
 
+void initCreatures()
+{
+	int c = 1;
+	/* init player */
+	CreatureInit(ACTOR_PLAYER, TYPE_PLAYER);
+
+	/* get emeny coords from objects layer */
+	TLN_ObjectList objectlist = TLN_LoadObjectList("map.tmx", NULL);
+	TLN_Object *object = objectlist->list;
+
+	/* place enemies */
+	while(object != NULL){
+		CreatureInitAtPos(c, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
+		object = object->next;
+		if (c==3)
+		break;
+		c++;
+	}
+}
+
 /* entry point */
 int main (int argc, char *argv[])
 {
-	int c = 1;
 	TLN_Tilemap foreground;
-	TLN_Tilemap background;
-	TLN_SequencePack sp;
-	TLN_Sequence sequence;
-	TLN_Palette palette;
+	int i, count;
 
 	/* setup engine */
 	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
@@ -40,21 +56,7 @@ int main (int argc, char *argv[])
 
 	/* init actors */
 	CreateActors(ACTOR_ENEMY_MAX);
-	/* init player */
-	CreatureInit(ACTOR_PLAYER, TYPE_PLAYER);
-
-	/* get emeny coords from objects layer */
-	TLN_ObjectList objectlist = TLN_LoadObjectList("map.tmx", NULL);
-	TLN_Object *object = objectlist->list;
-
-	/* place enemies */
-	while(object != NULL){
-		CreatureInitAtPos(c, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
-		object = object->next;
-		c++;
-	}
-
-	/* init enemies */
+	initCreatures();
 
 	/* startup display */
 	TLN_CreateWindow (NULL, 0);
@@ -65,6 +67,16 @@ int main (int argc, char *argv[])
 
 		/* process actors tasks */
 		TasksActors(frame);
+
+		/* restart game if there is no alive enemies */
+		count = 0;
+		for (i = 1; i < MAX_ENEMIES; i++){
+			Actor *enemy = GetActor(i);
+			if (enemy->state==ACTIVE)
+				count++;
+		}
+		if (count==0)
+			initCreatures();
 
 		/* render to window */
 		TLN_DrawFrame (0);
