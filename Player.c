@@ -3,10 +3,6 @@
 #include "Utils.h"
 #include "Actor.h"
 
-
-#define SPRITE_SIZE 16
-#define JUMP_HEIGHT 20
-
 typedef enum
 {
 	PLAYER_IDLE,

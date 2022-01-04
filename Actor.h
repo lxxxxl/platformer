@@ -2,8 +2,7 @@
 #define _ACTOR_H
 
 #include "Tilengine.h"
-
-#define MAX_ENEMIES 16
+#include "Utils.h"
 
 typedef struct
 {

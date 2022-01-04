@@ -2,12 +2,10 @@
 #include "Tilengine.h"
 #include "Actor.h"
 #include "Player.h"
+#include "Utils.h"
 
 #define WIDTH	640
 #define HEIGHT	400
-
-#define SPRITE_SIZE 16
-
 
 /* layers */
 enum
@@ -18,8 +16,6 @@ enum
 };
 
 unsigned int frame;
-
-static void raster_callback (int line);
 
 /* entry point */
 int main (int argc, char *argv[])
@@ -34,7 +30,6 @@ int main (int argc, char *argv[])
 	/* setup engine */
 	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
 	TLN_SetLogLevel(TLN_LOG_VERBOSE);
-	//TLN_SetRasterCallback (raster_callback);
 	TLN_SetBGColor (0,128,238);
 
 	/* load resources*/
