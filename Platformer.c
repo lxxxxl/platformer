@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "Tilengine.h"
+#include "ObjectList.h"
 #include "Actor.h"
-#include "Player.h"
+#include "Creature.h"
 #include "Utils.h"
 
 #define WIDTH	640
@@ -20,7 +21,7 @@ unsigned int frame;
 /* entry point */
 int main (int argc, char *argv[])
 {
-	int c;
+	int c = 1;
 	TLN_Tilemap foreground;
 	TLN_Tilemap background;
 	TLN_SequencePack sp;
@@ -29,7 +30,7 @@ int main (int argc, char *argv[])
 
 	/* setup engine */
 	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
-	TLN_SetLogLevel(TLN_LOG_VERBOSE);
+	//TLN_SetLogLevel(TLN_LOG_VERBOSE);
 	TLN_SetBGColor (0,128,238);
 
 	/* load resources*/
@@ -40,7 +41,20 @@ int main (int argc, char *argv[])
 	/* init actors */
 	CreateActors(ACTOR_ENEMY_MAX);
 	/* init player */
-	PlayerInit();
+	CreatureInit(ACTOR_PLAYER, TYPE_PLAYER);
+
+	/* get emeny coords from objects layer */
+	TLN_ObjectList objectlist = TLN_LoadObjectList("map.tmx", NULL);
+	TLN_Object *object = objectlist->list;
+
+	/* place enemies */
+	while(object != NULL){
+		CreatureInitAtPos(c, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
+		object = object->next;
+		c++;
+	}
+
+	/* init enemies */
 
 	/* startup display */
 	TLN_CreateWindow (NULL, 0);

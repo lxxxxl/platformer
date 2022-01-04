@@ -22,7 +22,7 @@ typedef struct Actor
 	Rect hitbox;
 	unsigned int timers[4];
 	void (*callback)(struct Actor*);
-	unsigned char usrdata[64];
+	unsigned char usrdata[512];
 }
 Actor;
 

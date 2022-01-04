@@ -32,14 +32,14 @@ else
 endif
 
 # common C flags
-CFLAGS += -I"Tilengine/include" -std=c99 -O2
+CFLAGS += -I"Tilengine/include" -I"Tilengine/src" -std=c99 -O2
 
 .PHONY: all all-before all-after clean clean-custom
 
 all: $(TARGETS)
 
-platformer: Platformer.o Player.o Utils.o Actor.o
-	$(CC) Platformer.o Player.o Utils.o Actor.o -o platformer $(LDFLAGS)
+platformer: Platformer.o Creature.o Utils.o Actor.o
+	$(CC) Platformer.o Creature.o Utils.o Actor.o -o platformer $(LDFLAGS)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
