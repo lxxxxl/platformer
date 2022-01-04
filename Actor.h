@@ -28,6 +28,12 @@ Actor;
 
 typedef enum
 {
+	FREE,
+	ACTIVE,
+	DEAD
+} ActorState;
+typedef enum
+{
 	ACTOR_PLAYER,
 	ACTOR_ENEMY1,
 	ACTOR_ENEMY_MAX = ACTOR_ENEMY1 + MAX_ENEMIES

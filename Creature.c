@@ -69,6 +69,7 @@ void CreatureDeinit (Actor *actor)
 	Creature *creature = (Creature*)actor->usrdata;
 	TLN_DeleteSequence(creature->walk);
 	TLN_DeleteSpriteset(creature->spriteset);
+	TLN_DisableSprite(actor->index);
 }
 
 void CreatureSetState (Actor *actor, int state)
@@ -101,7 +102,7 @@ void CreatureSetState (Actor *actor, int state)
 
 void CreatureTasks (Actor *actor)
 {
-	int y2, s0;
+	int y2, s0, i;
 	Direction input = 0;
 	bool jump = false;
 	Creature *creature = (Creature*)actor->usrdata;
@@ -174,7 +175,7 @@ void CreatureTasks (Actor *actor)
 	if (jump && creature->state!=CREATURE_JUMPING &&
 		(actor->y - JUMP_HEIGHT - SPRITE_SIZE*2) > 0){	// prevent jump out of screen
 		CreatureSetState (actor, CREATURE_JUMPING);
-		}
+	}
 
 	/* gravity */
 	s0 = creature->sy;
@@ -191,4 +192,43 @@ void CreatureTasks (Actor *actor)
 	if (s0>0 && creature->sy==0)
 		CreatureSetState (actor, CREATURE_IDLE);
 	actor->y = y2;
+
+	/* process collisions with enemies*/
+	for (i=1; i<MAX_ENEMIES; i++){
+		Actor *enemy = GetActor(i);
+
+		/* enemy already killed */
+		if (enemy->state==FREE)	
+			continue;
+
+		/* free killed enemy */
+		if (enemy->state==DEAD){
+			if(GetActorTimeout(enemy, 1)){
+				CreatureDeinit(enemy);
+				ReleaseActor(enemy);
+			}
+			continue;
+		}
+
+		/* perform check only when going down after jump*/
+		if (creature->sy < 0)
+			continue;
+		/* check collision */	
+		if (!CheckActorCollision(actor, enemy))
+			continue;
+
+		if (creature->state==CREATURE_JUMPING){
+			Creature *c = (Creature*)enemy->usrdata;
+			/* show explosion */
+			c->spriteset = TLN_LoadSpriteset("explode");
+			c->walk = TLN_CreateSpriteSequence (NULL, c->spriteset, "explode", 2);
+			TLN_SetSpriteSet (enemy->index, c->spriteset);
+			enemy->state = DEAD;
+			SetActorTimeout(enemy, 1, 5);
+
+			creature->sy = -JUMP_HEIGHT/3;
+		}
+
+	}
+
 }

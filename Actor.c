@@ -53,7 +53,7 @@ int GetAvailableActor (int first, int len)
 	last = first + len;
 	for (c=first; c<last; c++)
 	{
-		if (actors[c].state==0)
+		if (actors[c].state==FREE)
 			return c;
 	}
 	return -1;
@@ -77,7 +77,7 @@ Actor* SetActor (int index, int type, int x, int y, int w, int h, void (*callbac
 		actor->index = index;
 		actor->type = type;
 		actor->callback = callback;
-		actor->state = 1;
+		actor->state = ACTIVE;
 		actor->x = x;
 		actor->y = y;
 		actor->w = w;
@@ -92,7 +92,7 @@ Actor* SetActor (int index, int type, int x, int y, int w, int h, void (*callbac
 void ReleaseActor (Actor* actor)
 {
 	TLN_SetSpriteBlendMode (actor->index, BLEND_NONE, 0);
-	actor->state = 0;
+	actor->state = FREE;
 }
 
 /* sets collision box */
@@ -117,18 +117,19 @@ void TasksActors (unsigned int t)
 	for (c=0; c<count; c++)
 	{
 		Actor* actor = &actors[c];
-		if (actor->state != 0)
+		if (actor->state != FREE)
 			TasksActor (actor);
 	}
 }
 
 /* returns collision between two actors */
+/* checks collision of actor1's bottom with actor2's top */
 bool CheckActorCollision (Actor* actor1, Actor* actor2)
 {
 	return 
 		actor1->hitbox.x1 < actor2->hitbox.x2 &&
 		actor1->hitbox.x2 > actor2->hitbox.x1 &&
-		actor1->hitbox.y1 < actor2->hitbox.y2 &&
+		(actor1->hitbox.y1 + actor1->h/3) < (actor2->hitbox.y2 - actor2->h/3) &&
 		actor1->hitbox.y2 > actor2->hitbox.y1;
 }
 
