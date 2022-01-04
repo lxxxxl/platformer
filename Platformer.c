@@ -32,8 +32,6 @@ void initCreatures()
 	while(object != NULL){
 		CreatureInitAtPos(c, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
 		object = object->next;
-		if (c==3)
-		break;
 		c++;
 	}
 }
@@ -70,7 +68,7 @@ int main (int argc, char *argv[])
 
 		/* restart game if there is no alive enemies */
 		count = 0;
-		for (i = 1; i < MAX_ENEMIES; i++){
+		for (i = 1; i < MAX_ENEMIES+1; i++){
 			Actor *enemy = GetActor(i);
 			if (enemy->state==ACTIVE)
 				count++;

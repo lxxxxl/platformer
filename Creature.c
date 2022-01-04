@@ -194,7 +194,7 @@ void CreatureTasks (Actor *actor)
 	actor->y = y2;
 
 	/* process collisions with enemies*/
-	for (i=1; i<MAX_ENEMIES; i++){
+	for (i=1; i<MAX_ENEMIES+1; i++){
 		Actor *enemy = GetActor(i);
 
 		/* enemy already killed */
