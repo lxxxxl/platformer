@@ -42,17 +42,20 @@ void initCreatures()
 int main (int argc, char *argv[])
 {
 	TLN_Tilemap foreground;
+	TLN_Tilemap background;
 	int i, count;
 
 	/* setup engine */
 	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
 	//TLN_SetLogLevel(TLN_LOG_VERBOSE);
-	TLN_SetBGColor (0,128,238);
 
 	/* load resources*/
 	TLN_SetLoadPath ("assets");
-	foreground = TLN_LoadTilemap ("map.tmx", NULL);
+	foreground = TLN_LoadTilemap ("map.tmx", "tiles");
 	TLN_SetLayerTilemap (LAYER_FOREGROUND, foreground);
+
+	background = TLN_LoadTilemap ("map.tmx", "background");
+	TLN_SetLayerTilemap (LAYER_BACKGROUND, background);
 
 	/* init actors */
 	CreateActors(ACTOR_ENEMY_MAX);
