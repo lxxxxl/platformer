@@ -152,7 +152,7 @@ void CreatureTasks (Actor *actor)
 		break;
 
 	case CREATURE_WALKING:
-	case CREATURE_JUMPING:
+	
 		if (input == DIR_RIGHT){
 			if ((actor->x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(actor->x+SPRITE_SIZE, actor->y))
 				actor->x++;
@@ -166,22 +166,32 @@ void CreatureTasks (Actor *actor)
 				creature->direction=DIR_RIGHT;	// change ai direction if there is obstacle ahead
 		}
 
-		if (creature->state==CREATURE_WALKING && !input)
+		if (!input)
 			CreatureSetState (actor, CREATURE_IDLE);
 		break;
+
+	/* TODO do something when falling after jump right into non-passable tile*/
+	case CREATURE_JUMPING:
+		if (input == DIR_RIGHT && (actor->x < TLN_GetWidth()-SPRITE_SIZE))
+			actor->x++;
+		else if (input == DIR_LEFT && (actor->x > 0))
+			actor->x--;
+		break;
+
 	}
 
 	
-	if (jump && creature->state!=CREATURE_JUMPING &&
-		(actor->y - JUMP_HEIGHT - SPRITE_SIZE*2) > 0){	// prevent jump out of screen
+	if (jump && creature->state!=CREATURE_JUMPING)
 		CreatureSetState (actor, CREATURE_JUMPING);
-	}
 
 	/* gravity */
 	s0 = creature->sy;
 	if (creature->sy < 10)
 		creature->sy++;
 	y2 = actor->y + (creature->sy>>2);
+
+	//if (actor->type==TYPE_PLAYER)
+	//	printf("%d %d %d\n", creature->sy, y2, actor->y);
 
 	if ((creature->sy > 0) && 	// perform this check only when falling
 	(y2 % SPRITE_SIZE) <= 1 &&	// ... and only at the top of sprite
@@ -191,9 +201,15 @@ void CreatureTasks (Actor *actor)
 
 	if (s0>0 && creature->sy==0)
 		CreatureSetState (actor, CREATURE_IDLE);
+
+	/* prevent jump out from screen */
+	if (y2 < 0)
+		y2 = 0;
 	actor->y = y2;
 
 	/* process collisions with enemies*/
+	if (actor->type!=TYPE_PLAYER)
+		return;
 	for (i=1; i<MAX_ENEMIES+1; i++){
 		Actor *enemy = GetActor(i);
 
@@ -210,14 +226,12 @@ void CreatureTasks (Actor *actor)
 			continue;
 		}
 
-		/* perform check only when going down after jump*/
-		if (creature->sy < 0)
-			continue;
 		/* check collision */	
 		if (!CheckActorCollision(actor, enemy))
 			continue;
 
-		if (creature->state==CREATURE_JUMPING){
+		/* perform check only when falling */
+		if (creature->sy==10){
 			Creature *c = (Creature*)enemy->usrdata;
 			/* show explosion */
 			c->spriteset = TLN_LoadSpriteset("explode");
