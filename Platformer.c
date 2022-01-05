@@ -20,7 +20,7 @@ unsigned int frame;
 
 void initCreatures()
 {
-	int c = 1;
+	int enemy = 1;
 	/* init player */
 	CreatureInit(ACTOR_PLAYER, TYPE_PLAYER);
 
@@ -30,9 +30,11 @@ void initCreatures()
 
 	/* place enemies */
 	while(object != NULL){
-		CreatureInitAtPos(c, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
+		CreatureInitAtPos(enemy, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
 		object = object->next;
-		c++;
+		enemy++;
+		if (enemy >= ACTOR_ENEMY_MAX)
+			break;
 	}
 }
 
