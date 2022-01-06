@@ -37,6 +37,7 @@ void xworldIncrement()
             enemy->x = width;
 	}
     TLN_SetLayerPosition (LAYER_FOREGROUND, xworld, 0);
+    TLN_SetLayerPosition (LAYER_BACKGROUND, xworld/3, 0);
 }
 
 void xworldDecrement()
@@ -51,5 +52,6 @@ void xworldDecrement()
             enemy->x = 0;
 	}
     TLN_SetLayerPosition (LAYER_FOREGROUND, xworld, 0);
+    TLN_SetLayerPosition (LAYER_BACKGROUND, xworld/3, 0);
     TLN_GetLayerWidth(LAYER_FOREGROUND);
 }
