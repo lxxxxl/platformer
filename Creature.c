@@ -156,14 +156,18 @@ void CreatureTasks (Actor *actor)
 		if (input == DIR_RIGHT){
 			if ((actor->x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(actor->x+SPRITE_SIZE, actor->y))
 				actor->x++;
-			else if (actor->type!=TYPE_PLAYER)
+			else if (actor->type!=TYPE_PLAYER){
 				creature->direction=DIR_LEFT;	// change ai direction if there is obstacle ahead
+				TLN_SetSpriteFlags (actor->index, FLAG_FLIPX);
+			}
 		}
 		else if (input == DIR_LEFT){
 			if ((actor->x > 0)  && isPassable(actor->x-1, actor->y))
 				actor->x--;
-			else if (actor->type!=TYPE_PLAYER)
+			else if (actor->type!=TYPE_PLAYER){
 				creature->direction=DIR_RIGHT;	// change ai direction if there is obstacle ahead
+				TLN_SetSpriteFlags (actor->index, 0);
+			}
 		}
 
 		if (!input)
@@ -210,6 +214,7 @@ void CreatureTasks (Actor *actor)
 	/* process collisions with enemies*/
 	if (actor->type!=TYPE_PLAYER)
 		return;
+	return;
 	for (i=1; i<MAX_ENEMIES+1; i++){
 		Actor *enemy = GetActor(i);
 
