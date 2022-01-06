@@ -185,7 +185,7 @@ void CreatureTasks (Actor *actor)
 	}
 
 	
-	if (jump && creature->state!=CREATURE_JUMPING)
+	if (jump && creature->state!=CREATURE_JUMPING && creature->sy != 10) 
 		CreatureSetState (actor, CREATURE_JUMPING);
 
 	/* gravity */
@@ -193,9 +193,6 @@ void CreatureTasks (Actor *actor)
 	if (creature->sy < 10)
 		creature->sy++;
 	y2 = actor->y + (creature->sy>>2);
-
-	//if (actor->type==TYPE_PLAYER)
-	//	printf("%d %d %d\n", creature->sy, y2, actor->y);
 
 	if ((creature->sy > 0) && 	// perform this check only when falling
 	(y2 % SPRITE_SIZE) <= 1 &&	// ... and only at the top of sprite
@@ -214,7 +211,7 @@ void CreatureTasks (Actor *actor)
 	/* process collisions with enemies*/
 	if (actor->type!=TYPE_PLAYER)
 		return;
-	return;
+
 	for (i=1; i<MAX_ENEMIES+1; i++){
 		Actor *enemy = GetActor(i);
 
