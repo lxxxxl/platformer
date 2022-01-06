@@ -4,4 +4,5 @@ Platformer game based on [Tilengine](http://www.tilengine.org/)
 
 ## Links
 Used tileset - [https://rottingpixels.itch.io/nature-platformer-tileset](https://rottingpixels.itch.io/nature-platformer-tileset)  
-Creatures generated with [https://kenney.itch.io/creature-mixer](https://kenney.itch.io/creature-mixer)
+Creatures generated with [https://kenney.itch.io/creature-mixer](https://kenney.itch.io/creature-mixer)  
+Sound effects - [Mixkit](https://mixkit.co/free-sound-effects/game/)
