@@ -152,40 +152,41 @@ void CreatureTasks (Actor *actor)
 		break;
 
 	case CREATURE_WALKING:
-	
+	case CREATURE_JUMPING:
 		if (input == DIR_RIGHT){
-			if ((actor->x < TLN_GetWidth()-SPRITE_SIZE) && isPassable(actor->x+SPRITE_SIZE, actor->y))
-				actor->x++;
+			if (creature->state==CREATURE_JUMPING || isPassable(actor->x+SPRITE_SIZE, actor->y)){
+				if (actor->type!=TYPE_PLAYER || actor->x < SCREEN_WIDTH/2)	// do not increment xworld if it is ai
+					actor->x++;
+				else
+					if (actor->type==TYPE_PLAYER)
+						xworldIncrement();
+			}
 			else if (actor->type!=TYPE_PLAYER){
 				creature->direction=DIR_LEFT;	// change ai direction if there is obstacle ahead
 				TLN_SetSpriteFlags (actor->index, FLAG_FLIPX);
 			}
 		}
 		else if (input == DIR_LEFT){
-			if ((actor->x > 0)  && isPassable(actor->x-1, actor->y))
-				actor->x--;
+			if (creature->state==CREATURE_JUMPING || isPassable(actor->x-1, actor->y)){
+				if (actor->type!=TYPE_PLAYER || actor->x > SCREEN_WIDTH/2)	// do not increment xworld if it is ai
+					actor->x--;
+				else
+					if (actor->type==TYPE_PLAYER)
+						xworldDecrement();
+			}
 			else if (actor->type!=TYPE_PLAYER){
 				creature->direction=DIR_RIGHT;	// change ai direction if there is obstacle ahead
 				TLN_SetSpriteFlags (actor->index, 0);
 			}
 		}
 
-		if (!input)
+		if (!input && !jump){
 			CreatureSetState (actor, CREATURE_IDLE);
+		}
 		break;
-
-	/* TODO do something when falling after jump right into non-passable tile*/
-	case CREATURE_JUMPING:
-		if (input == DIR_RIGHT && (actor->x < TLN_GetWidth()-SPRITE_SIZE))
-			actor->x++;
-		else if (input == DIR_LEFT && (actor->x > 0))
-			actor->x--;
-		break;
-
 	}
 
-	
-	if (jump && creature->state!=CREATURE_JUMPING && creature->sy != 10) 
+	if (jump && creature->state!=CREATURE_JUMPING && creature->sy != 10) // do not jump if already falling
 		CreatureSetState (actor, CREATURE_JUMPING);
 
 	/* gravity */

@@ -5,24 +5,13 @@
 #include "Creature.h"
 #include "Utils.h"
 
-#define WIDTH	640
-#define HEIGHT	400
-
-/* layers */
-enum
-{
-	LAYER_FOREGROUND,
-	LAYER_BACKGROUND,
-	MAX_LAYER
-};
-
 unsigned int frame;
 
 void initCreatures()
 {
 	int enemy = 1;
 	/* init player */
-	CreatureInit(ACTOR_PLAYER, TYPE_PLAYER);
+	CreatureInitAtPos(ACTOR_PLAYER, ACTOR_PLAYER, SCREEN_WIDTH/2, 0);
 
 	/* get emeny coords from objects layer */
 	TLN_ObjectList objectlist = TLN_LoadObjectList("map.tmx", NULL);
@@ -46,7 +35,7 @@ int main (int argc, char *argv[])
 	int i, count;
 
 	/* setup engine */
-	TLN_Init (WIDTH,HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
+	TLN_Init (SCREEN_WIDTH, SCREEN_HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
 	//TLN_SetLogLevel(TLN_LOG_VERBOSE);
 
 	/* load resources*/
