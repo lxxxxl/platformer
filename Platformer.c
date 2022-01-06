@@ -4,6 +4,7 @@
 #include "Actor.h"
 #include "Creature.h"
 #include "Utils.h"
+#include "Sound.h"
 
 unsigned int frame;
 
@@ -49,6 +50,9 @@ int main (int argc, char *argv[])
 	/* init actors */
 	CreateActors(ACTOR_ENEMY_MAX);
 	initCreatures();
+	
+	/* init sound */
+	initSound();
 
 	/* startup display */
 	TLN_CreateWindow (NULL, 0);

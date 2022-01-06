@@ -38,8 +38,8 @@ CFLAGS += -I"Tilengine/include" -I"Tilengine/src" -std=c99 -O2
 
 all: $(TARGETS)
 
-platformer: Platformer.o Creature.o Utils.o Actor.o
-	$(CC) Platformer.o Creature.o Utils.o Actor.o -o platformer $(LDFLAGS)
+platformer: Platformer.o Creature.o Utils.o Actor.o Sound.o
+	$(CC) Platformer.o Creature.o Utils.o Actor.o Sound.o -o platformer $(LDFLAGS)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

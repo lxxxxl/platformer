@@ -5,6 +5,7 @@
 #include "Tilengine.h"
 #include "Actor.h"
 #include "Utils.h"
+#include "Sound.h"
 
 void CreatureInit (int index, int type);
 void CreatureInitAtPos (int index, int type, int x, int y);

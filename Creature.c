@@ -92,6 +92,7 @@ void CreatureSetState (Actor *actor, int state)
 		break;
 
 	case CREATURE_JUMPING:
+		playJump();
 		TLN_DisableSpriteAnimation (actor->index);
 		TLN_SetSpritePicture (actor->index, 2);
 		creature->sy = -JUMP_HEIGHT;
@@ -236,6 +237,8 @@ void CreatureTasks (Actor *actor)
 		/* perform check only when falling */
 		if (creature->sy==10){
 			Creature *c = (Creature*)enemy->usrdata;
+			/* play sound */
+			playKill();
 			/* show explosion */
 			c->spriteset = TLN_LoadSpriteset("explode");
 			c->walk = TLN_CreateSpriteSequence (NULL, c->spriteset, "explode", 2);
