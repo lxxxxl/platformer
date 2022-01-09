@@ -53,6 +53,7 @@ int main (int argc, char *argv[])
 	
 	/* init sound */
 	initSound();
+	playMusic();
 
 	/* startup display */
 	TLN_CreateWindow (NULL, 0);

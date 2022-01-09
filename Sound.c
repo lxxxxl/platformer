@@ -2,8 +2,9 @@
 
 void initSound()
 {
-	char *sounds[] = {"assets/jump.wav", "assets/kill.wav"};
+	char *sounds[] = {"jump.wav", "kill.wav"};
 	TLN_SoundInit(2, sounds);
+	TLN_MusicInit("music.mp3");
 }
 
 
@@ -15,4 +16,10 @@ void playJump()
 void playKill()
 {
 	TLN_PlaySound(1);
+}
+
+void playMusic()
+{
+	TLN_MusicVolume(40);
+	TLN_PlayMusic();
 }

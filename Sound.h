@@ -6,5 +6,6 @@
 void initSound();
 void playJump();
 void playKill();
+void playMusic();
 
 #endif
