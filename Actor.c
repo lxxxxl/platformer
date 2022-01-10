@@ -9,32 +9,32 @@ static int count = 0;
 static unsigned int time;
 
 /* local prototypes */
-static void TasksActor (Actor* actor);
+static void TasksActor(Actor* actor);
 
 /* create actors array */
-bool CreateActors (int num)
+bool CreateActors(int num)
 {
-	int size = sizeof(Actor)*num;
+	int size = sizeof(Actor) * num;
 	
 	if (actors != NULL)
 		return false;
 
-	actors = malloc (size);
+	actors = malloc(size);
 	if (actors)
 	{
 		count = num;
-		memset (actors, 0, size);
+		memset(actors, 0, size);
 		return true;
 	}
 	return false;
 }
 
 /* delete actors array */
-bool DeleteActors (void)
+bool DeleteActors(void)
 {
 	if (actors != NULL)
 	{
-		free (actors);
+		free(actors);
 		actors = NULL;
 		count = 0;
 		return true;
@@ -43,7 +43,7 @@ bool DeleteActors (void)
 }
 
 /* returns index of first available actor (-1 = all used) */
-int GetAvailableActor (int first, int len)
+int GetAvailableActor(int first, int len)
 {
 	int c, last;
 
@@ -51,16 +51,16 @@ int GetAvailableActor (int first, int len)
 		return -1;
 
 	last = first + len;
-	for (c=first; c<last; c++)
+	for (c = first; c < last; c++)
 	{
-		if (actors[c].state==FREE)
+		if (actors[c].state == FREE)
 			return c;
 	}
 	return -1;
 }
 
 /* gets actor pointer from index */
-Actor* GetActor (int index)
+Actor* GetActor(int index)
 {
 	if (actors && index<count)
 		return &actors[index];
@@ -69,9 +69,9 @@ Actor* GetActor (int index)
 }
 
 /* sets actor properties */
-Actor* SetActor (int index, int type, int x, int y, int w, int h, void (*callback)(struct Actor*))
+Actor* SetActor(int index, int type, int x, int y, int w, int h, void (*callback)(struct Actor*))
 {
-	if (actors && index<count)
+	if (actors && index < count)
 	{
 		Actor* actor = &actors[index];
 		actor->index = index;
@@ -82,16 +82,16 @@ Actor* SetActor (int index, int type, int x, int y, int w, int h, void (*callbac
 		actor->y = y;
 		actor->w = w;
 		actor->h = h;
-		UpdateActorHitbox (actor);
+		UpdateActorHitbox(actor);
 		return actor;
 	}
 	return NULL;
 }
 
 /* releases actor */
-void ReleaseActor (Actor* actor)
+void ReleaseActor(Actor* actor)
 {
-	TLN_SetSpriteBlendMode (actor->index, BLEND_NONE, 0);
+	TLN_SetSpriteBlendMode(actor->index, BLEND_NONE, 0);
 	actor->state = FREE;
 }
 
@@ -105,7 +105,7 @@ void UpdateActorHitbox (Actor* actor)
 }
 
 /* Periodic tasks */
-void TasksActors (unsigned int t)
+void TasksActors(unsigned int t)
 {
 	int c;
 
@@ -114,7 +114,7 @@ void TasksActors (unsigned int t)
 
 	time = t;
 
-	for (c=0; c<count; c++)
+	for (c = 0; c < count; c++)
 	{
 		Actor* actor = &actors[c];
 		if (actor->state != FREE)
@@ -124,7 +124,7 @@ void TasksActors (unsigned int t)
 
 /* returns collision between two actors */
 /* checks collision of actor1's bottom with actor2's top */
-bool CheckActorCollision (Actor* actor1, Actor* actor2)
+bool CheckActorCollision(Actor* actor1, Actor* actor2)
 {
 	return 
 		actor1->hitbox.x1 < actor2->hitbox.x2 &&
@@ -134,35 +134,35 @@ bool CheckActorCollision (Actor* actor1, Actor* actor2)
 }
 
 /* sets generic timeout */
-void SetActorTimeout (Actor* actor, int timer, int timeout)
+void SetActorTimeout(Actor* actor, int timer, int timeout)
 {
 	actor->timers[timer] = time + timeout;
 }
 
 /* gets generic timeout ended */
-bool GetActorTimeout (Actor* actor, int timer)
+bool GetActorTimeout(Actor* actor, int timer)
 {
 	return time >= actor->timers[timer];
 }
 
 /* TasksActor */
-static void TasksActor (Actor* actor)
+static void TasksActor(Actor* actor)
 {
 	/* motion */
 	actor->x += actor->vx;
 	actor->y += actor->vy;
 	if (actor->callback)
-		actor->callback (actor);
+		actor->callback(actor);
 
 	/* updates associated sprite */
 	if (actor->state != 0)
 	{
-		UpdateActorHitbox (actor);
-		TLN_SetSpritePosition (actor->index, actor->x, actor->y);
+		UpdateActorHitbox(actor);
+		TLN_SetSpritePosition(actor->index, actor->x, actor->y);
 	}
 	else
 	{
-		TLN_DisableSprite (actor->index);
-		TLN_DisableSpriteAnimation (actor->index);
+		TLN_DisableSprite(actor->index);
+		TLN_DisableSpriteAnimation(actor->index);
 	}
 }

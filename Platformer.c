@@ -20,7 +20,7 @@ void initCreatures()
 
 	/* place enemies */
 	while(object != NULL){
-		CreatureInitAtPos(enemy, TYPE_ENEMY, object->x, object->y-SPRITE_SIZE);
+		CreatureInitAtPos(enemy, TYPE_ENEMY, object->x, object->y - SPRITE_SIZE);
 		object = object->next;
 		enemy++;
 		if (enemy >= ACTOR_ENEMY_MAX)
@@ -29,23 +29,23 @@ void initCreatures()
 }
 
 /* entry point */
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	TLN_Tilemap foreground;
 	TLN_Tilemap background;
 	int i, count;
 
 	/* setup engine */
-	TLN_Init (SCREEN_WIDTH, SCREEN_HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
+	TLN_Init(SCREEN_WIDTH, SCREEN_HEIGHT, MAX_LAYER, ACTOR_ENEMY_MAX, 1);
 	//TLN_SetLogLevel(TLN_LOG_VERBOSE);
 
 	/* load resources*/
-	TLN_SetLoadPath ("assets");
-	foreground = TLN_LoadTilemap ("map.tmx", "tiles");
-	TLN_SetLayerTilemap (LAYER_FOREGROUND, foreground);
+	TLN_SetLoadPath("assets");
+	foreground = TLN_LoadTilemap("map.tmx", "tiles");
+	TLN_SetLayerTilemap(LAYER_FOREGROUND, foreground);
 
-	background = TLN_LoadTilemap ("map.tmx", "background");
-	TLN_SetLayerTilemap (LAYER_BACKGROUND, background);
+	background = TLN_LoadTilemap("map.tmx", "background");
+	TLN_SetLayerTilemap(LAYER_BACKGROUND, background);
 
 	/* init actors */
 	CreateActors(ACTOR_ENEMY_MAX);
@@ -56,10 +56,10 @@ int main (int argc, char *argv[])
 	playMusic();
 
 	/* startup display */
-	TLN_CreateWindow (NULL, 0);
+	TLN_CreateWindow(NULL, 0);
 
 	/* main loop */
-	while (TLN_ProcessWindow ())
+	while (TLN_ProcessWindow())
 	{
 
 		/* process actors tasks */
@@ -69,21 +69,21 @@ int main (int argc, char *argv[])
 		count = 0;
 		for (i = 1; i < MAX_ENEMIES+1; i++){
 			Actor *enemy = GetActor(i);
-			if (enemy->state==ACTIVE)
+			if (enemy->state == ACTIVE)
 				count++;
 		}
-		if (count==0)
+		if (count == 0)
 			initCreatures();
 
 		/* render to window */
-		TLN_DrawFrame (0);
+		TLN_DrawFrame(0);
 
 		frame++;
 	}
 
 	/* deinit */
-	TLN_DeleteTilemap (foreground);
-	TLN_Deinit ();
+	TLN_DeleteTilemap(foreground);
+	TLN_Deinit();
 
 	return 0;
 }

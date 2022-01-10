@@ -7,8 +7,8 @@
 #include "Utils.h"
 #include "Sound.h"
 
-void CreatureInit (int index, int type);
-void CreatureInitAtPos (int index, int type, int x, int y);
-void CreatureDeinit (Actor *actor);
+void CreatureInit(int index, int type);
+void CreatureInitAtPos(int index, int type, int x, int y);
+void CreatureDeinit(Actor *actor);
 
 #endif

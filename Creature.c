@@ -6,16 +6,14 @@ typedef enum
 	CREATURE_WALK,
 	CREATURE_JUMP,
 	CREATURE_FALL
-}
-CreatureState;
+} CreatureState;
 
 typedef enum
 {
 	DIR_NONE,
 	DIR_LEFT,
 	DIR_RIGHT,
-}
-Direction;
+} Direction;
 
 typedef struct
 {
@@ -25,18 +23,17 @@ typedef struct
 	Direction direction;
 	int yspeed;
 	bool floor;
-}
-Creature;
+} Creature;
 
 
-void CreatureTasks (Actor *actor);
-void CreatureSetState (Actor *actor, int state);
+void CreatureTasks(Actor *actor);
+void CreatureSetState(Actor *actor, int state);
 
-void CreatureInit (int index, int type)
+void CreatureInit(int index, int type)
 {
 	Actor* actor;
 	Creature* creature;
-	actor = SetActor(index, type, 0,0, SPRITE_SIZE, SPRITE_SIZE, CreatureTasks);
+	actor = SetActor(index, type, 0, 0, SPRITE_SIZE, SPRITE_SIZE, CreatureTasks);
 	creature = (Creature*)actor->usrdata;
 	if (type == TYPE_PLAYER)
 		creature->spriteset = TLN_LoadSpriteset("Player");
@@ -48,17 +45,17 @@ void CreatureInit (int index, int type)
 
 
 	/* create sequences from sprite names */
-	creature->walk = TLN_CreateSpriteSequence (NULL, creature->spriteset, "walk", 2);
+	creature->walk = TLN_CreateSpriteSequence(NULL, creature->spriteset, "walk", 2);
 	
-	TLN_SetSpriteSet (actor->index, creature->spriteset);
+	TLN_SetSpriteSet(actor->index, creature->spriteset);
 	
-	CreatureSetState (actor, CREATURE_IDLE);
+	CreatureSetState(actor, CREATURE_IDLE);
 	creature->direction = DIR_RIGHT;
 	creature->yspeed = 0;
 	creature->floor = false;
 }
 
-void CreatureInitAtPos (int index, int type, int x, int y)
+void CreatureInitAtPos(int index, int type, int x, int y)
 {
 	Actor* actor;
 	CreatureInit(index, type);
@@ -67,7 +64,7 @@ void CreatureInitAtPos (int index, int type, int x, int y)
 	actor->y = y;
 }
 
-void CreatureDeinit (Actor *actor)
+void CreatureDeinit(Actor *actor)
 {
 	Creature *creature = (Creature*)actor->usrdata;
 	TLN_DeleteSequence(creature->walk);
@@ -75,7 +72,7 @@ void CreatureDeinit (Actor *actor)
 	TLN_DisableSprite(actor->index);
 }
 
-void CreatureSetState (Actor *actor, int state)
+void CreatureSetState(Actor *actor, int state)
 {
 	Creature *creature = (Creature*)actor->usrdata;
 
@@ -86,26 +83,25 @@ void CreatureSetState (Actor *actor, int state)
 	switch (creature->state)
 	{
 	case CREATURE_IDLE:
-		TLN_DisableSpriteAnimation (actor->index);
-		TLN_SetSpritePicture (actor->index, 0);
+		TLN_DisableSpriteAnimation(actor->index);
+		TLN_SetSpritePicture(actor->index, 0);
 		break;
 
 	case CREATURE_WALK:
-		TLN_SetSpriteAnimation (actor->index, creature->walk, 0);
+		TLN_SetSpriteAnimation(actor->index, creature->walk, 0);
 		break;
 
 	case CREATURE_JUMP:
 		playJump();
-		TLN_DisableSpriteAnimation (actor->index);
-		TLN_SetSpritePicture (actor->index, 2);
+		TLN_DisableSpriteAnimation(actor->index);
+		TLN_SetSpritePicture(actor->index, 2);
 		creature->yspeed = -JUMP_HEIGHT;
 		creature->floor = false;
 		break;
 	}
 }
 
-
-void CreatureTasks (Actor *actor)
+void CreatureTasks(Actor *actor)
 {
 	int ynew, yspeedold, i;
 	Direction input = 0;
@@ -114,18 +110,18 @@ void CreatureTasks (Actor *actor)
 	TileType tile;
 
 	/* player input */
-	if (actor->type==TYPE_PLAYER){
-		if (TLN_GetInput (INPUT_LEFT))
+	if (actor->type == TYPE_PLAYER){
+		if (TLN_GetInput(INPUT_LEFT))
 			input = DIR_LEFT;
-		else if (TLN_GetInput (INPUT_RIGHT))
+		else if (TLN_GetInput(INPUT_RIGHT))
 			input = DIR_RIGHT;
-		if (TLN_GetInput (INPUT_A))
+		if (TLN_GetInput(INPUT_A))
 			jump = true;
 	}
 	/* .. or ai processing */
 	else{
 		tile = getTileType(actor->x+SPRITE_SIZE/2, actor->y+SPRITE_SIZE);
-		if (creature->direction==DIR_LEFT){
+		if (creature->direction == DIR_LEFT){
 			if (tile == TILE_SOLID || tile == TILE_ONEWAY)
 				input = DIR_LEFT;
 			else
@@ -140,19 +136,19 @@ void CreatureTasks (Actor *actor)
 	}
 
 	/* direction flags */
-	if (input==DIR_RIGHT && creature->direction==DIR_LEFT)
+	if (input == DIR_RIGHT && creature->direction == DIR_LEFT)
 	{
 		creature->direction = input;
-		TLN_SetSpriteFlags (actor->index, 0);
+		TLN_SetSpriteFlags(actor->index, 0);
 	}
-	if (input==DIR_LEFT && creature->direction==DIR_RIGHT)
+	if (input == DIR_LEFT && creature->direction == DIR_RIGHT)
 	{
 		creature->direction = input;
-		TLN_SetSpriteFlags (actor->index, FLAG_FLIPX);
+		TLN_SetSpriteFlags(actor->index, FLAG_FLIPX);
 	}
 
-	if (jump && creature->floor && creature->state!=CREATURE_JUMP && creature->state!=CREATURE_FALL)
-		CreatureSetState (actor, CREATURE_JUMP);
+	if (jump && creature->floor && creature->state != CREATURE_JUMP && creature->state != CREATURE_FALL)
+		CreatureSetState(actor, CREATURE_JUMP);
 
 
 	/* gravity */
@@ -160,29 +156,26 @@ void CreatureTasks (Actor *actor)
 	if (creature->yspeed < 10 && !creature->floor)
 		creature->yspeed++;
 	ynew = actor->y + (creature->yspeed>>2);
-	if (creature->yspeed > 0 && !creature->floor && creature->state!=CREATURE_FALL)
-		CreatureSetState (actor, CREATURE_FALL);
+	if (creature->yspeed > 0 && !creature->floor && creature->state != CREATURE_FALL)
+		CreatureSetState(actor, CREATURE_FALL);
 
 	/* prevent jump out from screen */
 	if (ynew < 0)
 		ynew = 0;
 
 	if (!input && !jump && creature->floor)
-		CreatureSetState (actor, CREATURE_IDLE);
+		CreatureSetState(actor, CREATURE_IDLE);
 
 	switch (creature->state)
 	{
 	case CREATURE_IDLE:
 		if (input)
-			CreatureSetState (actor, CREATURE_WALK);
+			CreatureSetState(actor, CREATURE_WALK);
 		break;
 
 	
 	case CREATURE_JUMP:
-		// todo perform this check  only when falling???
-		// and only at the top of sprite
-		// TODO check 3 points?
-		tile = getTileType(actor->x+SPRITE_SIZE/2, ynew);
+		tile = getTileType(actor->x + SPRITE_SIZE/2, ynew);
 		if (tile == TILE_SOLID)
 			creature->yspeed = 0;
 	case CREATURE_FALL:
@@ -195,7 +188,7 @@ void CreatureTasks (Actor *actor)
 				creature->yspeed = 0;
 				creature->floor = true;
 
-				if (yspeedold>0 && creature->yspeed==0)
+				if (yspeedold > 0 && creature->yspeed == 0)
 					CreatureSetState (actor, CREATURE_IDLE);
 			}
 			else
@@ -203,30 +196,30 @@ void CreatureTasks (Actor *actor)
 		}
 
 		if (input == DIR_RIGHT){
-			tile = getTileType(actor->x+SPRITE_SIZE, actor->y+SPRITE_SIZE/2);
-			if (actor->type!=TYPE_PLAYER && (tile == TILE_ONEWAY || tile == TILE_SOLID)){
-				creature->direction=DIR_LEFT;	// change ai direction if there is obstacle ahead
-				TLN_SetSpriteFlags (actor->index, FLAG_FLIPX);
+			tile = getTileType(actor->x + SPRITE_SIZE, actor->y + SPRITE_SIZE/2);
+			if (actor->type != TYPE_PLAYER && (tile == TILE_ONEWAY || tile == TILE_SOLID)){
+				creature->direction = DIR_LEFT;	// change ai direction if there is obstacle ahead
+				TLN_SetSpriteFlags(actor->index, FLAG_FLIPX);
 			}
 			if (tile != TILE_SOLID){
-				if (actor->type!=TYPE_PLAYER || actor->x < SCREEN_WIDTH/2)	// do not increment xworld if it is ai
+				if (actor->type != TYPE_PLAYER || actor->x < SCREEN_WIDTH/2)	// do not increment xworld if it is ai
 					actor->x++;
 				else
-					if (actor->type==TYPE_PLAYER)
+					if (actor->type == TYPE_PLAYER)
 						xworldIncrement();
 			}
 		}
 		else if (input == DIR_LEFT){
-			tile = getTileType(actor->x-1, actor->y+SPRITE_SIZE/2);
-			if (actor->type!=TYPE_PLAYER && (tile == TILE_ONEWAY || tile == TILE_SOLID)){
-				creature->direction=DIR_RIGHT;	// change ai direction if there is obstacle ahead
-				TLN_SetSpriteFlags (actor->index, 0);
+			tile = getTileType(actor->x - 1, actor->y + SPRITE_SIZE/2);
+			if (actor->type != TYPE_PLAYER && (tile == TILE_ONEWAY || tile == TILE_SOLID)){
+				creature->direction = DIR_RIGHT;	// change ai direction if there is obstacle ahead
+				TLN_SetSpriteFlags(actor->index, 0);
 			}
 			if (tile != TILE_SOLID){
-				if (actor->type!=TYPE_PLAYER || actor->x > SCREEN_WIDTH/2)	// do not increment xworld if it is ai
+				if (actor->type != TYPE_PLAYER || actor->x > SCREEN_WIDTH/2)	// do not increment xworld if it is ai
 					actor->x--;
 				else
-					if (actor->type==TYPE_PLAYER)
+					if (actor->type == TYPE_PLAYER)
 						xworldDecrement();
 			}
 		}
@@ -238,18 +231,18 @@ void CreatureTasks (Actor *actor)
 	actor->y = ynew;
 
 	/* process collisions with enemies*/
-	if (actor->type!=TYPE_PLAYER)
+	if (actor->type != TYPE_PLAYER)
 		return;
 
-	for (i=1; i<MAX_ENEMIES+1; i++){
+	for (i = 1; i < MAX_ENEMIES + 1; i++){
 		Actor *enemy = GetActor(i);
 
 		/* enemy already killed */
-		if (enemy->state==FREE)	
+		if (enemy->state == FREE)	
 			continue;
 
 		/* free killed enemy */
-		if (enemy->state==DEAD){
+		if (enemy->state == DEAD){
 			if(GetActorTimeout(enemy, 1)){
 				CreatureDeinit(enemy);
 				ReleaseActor(enemy);
@@ -275,7 +268,5 @@ void CreatureTasks (Actor *actor)
 
 			creature->yspeed = -JUMP_HEIGHT/3;
 		}
-
 	}
-
 }

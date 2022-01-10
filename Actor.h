@@ -6,7 +6,7 @@
 
 typedef struct
 {
-	int x1,y1,x2,y2;
+	int x1, y1, x2, y2;
 }
 Rect;
 
@@ -23,8 +23,7 @@ typedef struct Actor
 	unsigned int timers[4];
 	void (*callback)(struct Actor*);
 	unsigned char usrdata[512];
-}
-Actor;
+} Actor;
 
 typedef enum
 {
@@ -32,6 +31,7 @@ typedef enum
 	ACTIVE,
 	DEAD
 } ActorState;
+
 typedef enum
 {
 	ACTOR_PLAYER,
@@ -46,16 +46,16 @@ typedef enum
 } ActorType;
 
 
-bool	CreateActors (int num);
-bool	DeleteActors (void);
-int		GetAvailableActor (int first, int len);
-Actor*	GetActor (int index);
-Actor*	SetActor (int index, int type, int x, int y, int w, int h, void (*callback)(struct Actor*));
-void	ReleaseActor (Actor* actor);
-void	UpdateActorHitbox (Actor* actor);
-void	TasksActors (unsigned int time);
-bool	CheckActorCollision (Actor* actor1, Actor* actor2);
-void	SetActorTimeout (Actor* actor, int timer, int timeout);
-bool	GetActorTimeout (Actor* actor, int timer);
+bool	CreateActors(int num);
+bool	DeleteActors(void);
+int		GetAvailableActor(int first, int len);
+Actor*	GetActor(int index);
+Actor*	SetActor(int index, int type, int x, int y, int w, int h, void (*callback)(struct Actor*));
+void	ReleaseActor(Actor* actor);
+void	UpdateActorHitbox(Actor* actor);
+void	TasksActors(unsigned int time);
+bool	CheckActorCollision(Actor* actor1, Actor* actor2);
+void	SetActorTimeout(Actor* actor, int timer, int timeout);
+bool	GetActorTimeout(Actor* actor, int timer);
 
 #endif
